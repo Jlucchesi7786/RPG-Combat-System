@@ -219,6 +219,7 @@ public abstract class AbstractChar extends Entity {
 	 */
 	@Override
 	public final void act(ArrayList<Entity> encounter) {
+		@SuppressWarnings("resource")
 		Scanner reader = new Scanner(System.in);
 
 		for (int i = 0; i < durations.size(); i++) {
@@ -251,7 +252,6 @@ public abstract class AbstractChar extends Entity {
 			status();
 		}
 		System.out.println();
-		reader.close();
 	}
 	
 	/**
