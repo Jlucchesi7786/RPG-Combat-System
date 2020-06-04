@@ -41,6 +41,8 @@ public abstract class AbstractChar extends Entity {
 	 */
 	protected ArrayList<Integer> durations = new ArrayList<Integer>();
 	
+	private String inputString;
+	
 	/**
 	 * This method adds an item to the character's inventory at the end.
 	 * @param a The item to be added.
@@ -231,14 +233,36 @@ public abstract class AbstractChar extends Entity {
 		
 		System.out.println("\n" + name + ", " + HP + "/" + HPmax + " HP");
 		System.out.println("What would you like " + name + " to do?");
-		String response = reader.nextLine();
+		inputString = reader.nextLine();
 		
-		if (response.equals("attack")) {
+		checkInputString();
+		
+		runInputString(encounter);
+	}
+	
+	private void runInputString(ArrayList<Entity> encounter) {
+		@SuppressWarnings("resource")
+		Scanner reader = new Scanner(System.in);
+		
+		while (isInfo(inputString)) {
+			if (inputString.equals("help")) {
+				System.out.println(helpString());
+			} else if (inputString.equals("status")) {
+				status();
+			}
+			
+			System.out.println("Please enter a command: ");
+			inputString = reader.nextLine();
+			checkInputString();
+		}
+		
+		if (inputString.equals("attack")) {
+			System.out.println();
 			planAttack(encounter);
-		} else if (response.equals("use item")) {
+		} else if (inputString.equals("use item")) {
 			System.out.println(showInventory());
 			System.out.println("What item do you want to use?");
-			response = reader.nextLine();
+			String response = reader.nextLine();
 			for (Item a: inventory) {
 				if (a.getName().equals(response) && a instanceof Consumable) {
 					use((Consumable) a);
@@ -248,10 +272,53 @@ public abstract class AbstractChar extends Entity {
 					break;
 				}
 			}
-		} else if (response.equals("status")) {
-			status();
 		}
-		System.out.println();
+	}
+	
+	private String helpString() {
+		return "Check your status by entering 'status', attack by entering 'attack', and "
+				+ "use an item by entering \n'use item'. Enter 'help' to see this message "
+				+ "again.";
+	}
+	
+	private void checkInputString() {
+		if (isAction(inputString) || isInfo(inputString)) {
+			return;
+		}
+		loopInputString();
+	}
+	
+	private boolean isAction(String s) {
+		String[] actionArr = {"attack", "use item"};
+		
+		for (String e: actionArr) {
+			if (s.equals(e)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean isInfo(String s) {
+		String[] infoArr = {"status", "help"};
+		
+		for (String e: infoArr) {
+			if (s.equals(e)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private void loopInputString() {
+		@SuppressWarnings("resource")
+		Scanner reader = new Scanner(System.in);
+		do {
+			System.out.println("That is not a command. Please enter a command:");
+			inputString = reader.nextLine();
+		} while (!isAction(inputString) && !isInfo(inputString));
 	}
 	
 	/**
