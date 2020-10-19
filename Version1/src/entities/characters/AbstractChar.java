@@ -275,12 +275,20 @@ public abstract class AbstractChar extends Entity {
 		}
 	}
 	
+	/**
+	 * Constructs the string explaining how to use the combat system.
+	 * @return The help string
+	 */
 	private String helpString() {
 		return "Check your status by entering 'status', attack by entering 'attack', and "
 				+ "use an item by entering \n'use item'. Enter 'help' to see this message "
 				+ "again.";
 	}
 	
+	/**
+	 * This method checks if the input string is an Action or an Info command, and if not
+	 * runs the <code>.loopInputString()</code> method to make it one.
+	 */
 	private void checkInputString() {
 		if (isAction(inputString) || isInfo(inputString)) {
 			return;
